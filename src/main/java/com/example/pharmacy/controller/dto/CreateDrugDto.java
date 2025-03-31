@@ -1,5 +1,7 @@
 package com.example.pharmacy.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 
@@ -12,7 +14,7 @@ public class CreateDrugDto {
     private BigDecimal price;
 
     private Date expirationDate;
-
+    @JsonProperty("stock_quantity")
     private int stockQuantity;
 
     public CreateDrugDto(String name, String manufacturer, BigDecimal price, Date expirationDate, int stockQuantity) {
