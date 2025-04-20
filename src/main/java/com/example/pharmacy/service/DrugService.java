@@ -1,8 +1,8 @@
 package com.example.pharmacy.service;
 
-import com.example.pharmacy.controller.dto.CreateDrugDto;
-import com.example.pharmacy.controller.dto.CreateDrugResponseDto;
-import com.example.pharmacy.controller.dto.GetDrugDto;
+import com.example.pharmacy.controller.dto.drug.CreateDrugDto;
+import com.example.pharmacy.controller.dto.drug.CreateDrugResponseDto;
+import com.example.pharmacy.controller.dto.drug.GetDrugDto;
 import com.example.pharmacy.infrastructure.entity.MedicationsEntity;
 import com.example.pharmacy.repository.DrugRepository;
 import com.example.pharmacy.service.inputs.DrugModel;

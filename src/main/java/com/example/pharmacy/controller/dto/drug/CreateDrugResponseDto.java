@@ -1,32 +1,23 @@
-package com.example.pharmacy.controller.dto;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.*;
+package com.example.pharmacy.controller.dto.drug;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 
-public class CreateDrugDto {
+public class CreateDrugResponseDto {
 
-    @NotBlank(message = "Name is required")
+    private int id;
     private String name;
 
-    @NotBlank(message = "Manufacturer is required")
     private String manufacturer;
 
-    @NotNull(message = "Price is required")
-    @DecimalMin(value = "0.00", inclusive = false, message = "Price must be greater than 0")
     private BigDecimal price;
 
-    @NotNull(message = "Expiration date is required")
-    @Future(message = "Expiration date must be in the future")
     private Date expirationDate;
 
-    @Min(value = 0, message = "Stock quantity cannot be negative")
-    @JsonProperty("stock_quantity")
     private int stockQuantity;
 
-    public CreateDrugDto(String name, String manufacturer, BigDecimal price, Date expirationDate, int stockQuantity) {
+    public CreateDrugResponseDto(int id, String name, String manufacturer, BigDecimal price, Date expirationDate, int stockQuantity) {
+        this.id = id;
         this.name = name;
         this.manufacturer = manufacturer;
         this.price = price;
@@ -34,7 +25,16 @@ public class CreateDrugDto {
         this.stockQuantity = stockQuantity;
     }
 
-    public CreateDrugDto() {}
+    public CreateDrugResponseDto(){
+
+    }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

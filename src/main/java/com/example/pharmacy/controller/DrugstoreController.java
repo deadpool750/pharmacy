@@ -1,9 +1,8 @@
 package com.example.pharmacy.controller;
 
-import com.example.pharmacy.controller.dto.CreateDrugDto;
-import com.example.pharmacy.controller.dto.CreateDrugResponseDto;
-import com.example.pharmacy.controller.dto.GetDrugDto;
-import com.example.pharmacy.infrastructure.entity.MedicationsEntity;
+import com.example.pharmacy.controller.dto.drug.CreateDrugDto;
+import com.example.pharmacy.controller.dto.drug.CreateDrugResponseDto;
+import com.example.pharmacy.controller.dto.drug.GetDrugDto;
 import com.example.pharmacy.service.DrugService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

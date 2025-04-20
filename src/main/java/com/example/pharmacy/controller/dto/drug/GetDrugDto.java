@@ -1,4 +1,4 @@
-package com.example.pharmacy.controller.dto;
+package com.example.pharmacy.controller.dto.drug;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Basic;
