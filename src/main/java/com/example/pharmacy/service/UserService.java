@@ -8,26 +8,29 @@ import com.example.pharmacy.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
     private final IUserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(IUserRepository userRepository) {
+    public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public CreateUserResponseDto createUser(CreateUserRequestDto userDto) {
         var userEntity = new UserEntity();
 
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        var hashedpassword = passwordEncoder.encode(userDto.getPassword());
+        var hashedPassword = passwordEncoder.encode(userDto.getPassword());
 
         userEntity.setUsername(userDto.getUsername());
-        userEntity.setPassword(hashedpassword);
+        userEntity.setPassword(hashedPassword);
         var savedUser = userRepository.save(userEntity);
+
         return new CreateUserResponseDto(savedUser.getId());
     }
     public UserResponseDto getUser(long id) {

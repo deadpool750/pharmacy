@@ -6,6 +6,7 @@ import com.example.pharmacy.repository.IUserRepository;
 import io.jsonwebtoken.security.Password;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,9 +14,12 @@ public class AuthService {
     private final IUserRepository userRepository;
     private final JwtService jwtService;
 
-    public AuthService(IUserRepository userRepository, JwtService jwtService) {
+    private final PasswordEncoder passwordEncoder;
+
+    public AuthService(IUserRepository userRepository, JwtService jwtService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
