@@ -37,4 +37,10 @@ public class UserService {
         var user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         return new UserResponseDto(user.getId(), user.getUsername());
     }
+
+    //tutaj tez
+    public UserResponseDto getByUsername(String username){
+        var user = userRepository.findByUsername(username).orElseThrow(()-> new RuntimeException("User not found"));
+        return new UserResponseDto(user.getId(), user.getUsername());
+    }
 }

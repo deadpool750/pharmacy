@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/api/users")
+//preauthorized
 public class UserController {
 
     private final UserService userService;
@@ -26,5 +29,13 @@ public class UserController {
     @PostMapping
     public CreateUserResponseDto createUser(@RequestBody CreateUserRequestDto user) {
         return userService.createUser(user);
+    }
+
+
+    //tutaj cos do zrobienia
+    @GetMapping("/me")
+    public UserResponseDto getMe(Principal principal){
+
+        return new UserResponseDto(1L, principal.getName());
     }
 }
