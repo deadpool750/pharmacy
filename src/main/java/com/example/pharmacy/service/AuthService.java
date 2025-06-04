@@ -3,17 +3,14 @@ package com.example.pharmacy.service;
 import com.example.pharmacy.controller.dto.login.LoginRequestDto;
 import com.example.pharmacy.controller.dto.login.LoginResponseDto;
 import com.example.pharmacy.repository.IUserRepository;
-import io.jsonwebtoken.security.Password;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
+
     private final IUserRepository userRepository;
     private final JwtService jwtService;
-
     private final PasswordEncoder passwordEncoder;
 
     public AuthService(IUserRepository userRepository, JwtService jwtService, PasswordEncoder passwordEncoder) {
@@ -23,18 +20,20 @@ public class AuthService {
     }
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        var user = userRepository.findByUsername(loginRequestDto.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
+        System.out.println("Attempting login for username: " + loginRequestDto.getUsername());
 
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        var user = userRepository.findByUsername(loginRequestDto.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        var doPasswordsMatch = passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword());
+        System.out.println("Password hash from DB: " + user.getPassword());
 
-        if(!doPasswordsMatch){
-            throw new RuntimeException("You're unauthorized buddy");
+        boolean doPasswordsMatch = passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword());
+
+        if (!doPasswordsMatch) {
+            throw new RuntimeException("Unauthorized: Incorrect password");
         }
 
-
+        System.out.println("Login successful for user: " + user.getUsername());
         return new LoginResponseDto(jwtService.createToken(user));
-
     }
 }

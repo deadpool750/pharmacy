@@ -3,6 +3,9 @@ package com.example.pharmacy.controller.dto.login;
 public class LoginResponseDto {
     private String token;
 
+    public LoginResponseDto() {
+    }
+
     public LoginResponseDto(String token) {
         this.token = token;
     }

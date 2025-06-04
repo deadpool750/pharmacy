@@ -1,37 +1,16 @@
-// src/App.tsx
-import React from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
-import Register from './Register';
-import { Container, Typography, TextField, Button, Box } from '@mui/material';
-
-function Login() {
-    return (
-        <Container maxWidth="xs">
-            <Box sx={{ mt: 8 }}>
-                <Typography variant="h4" align="center" gutterBottom>
-                    Login
-                </Typography>
-                <TextField label="Username" fullWidth margin="normal" />
-                <TextField label="Password" type="password" fullWidth margin="normal" />
-                <Button variant="contained" fullWidth sx={{ mt: 2 }}>
-                    Login
-                </Button>
-                <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-                    Don't have an account?{' '}
-                    <Link to="/register" style={{ textDecoration: 'none', color: '#1976d2' }}>
-                        Register
-                    </Link>
-                </Typography>
-            </Box>
-        </Container>
-    );
-}
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import HomePage from "./pages/HomePage";
 
 export default function App() {
     return (
         <Routes>
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<Navigate to="/login" />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/home" element={<HomePage />} />
         </Routes>
     );
 }
