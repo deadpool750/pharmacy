@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/drugs")
-@PreAuthorize("isAuthenticated()")
 public class DrugstoreController {
 
     private final DrugService drugService;
@@ -31,18 +30,21 @@ public class DrugstoreController {
     }
 
     @GetMapping("/{id}")
-    public GetDrugDto getOne(@PathVariable int id){
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
+    public GetDrugDto getOne(@PathVariable int id) {
         return drugService.getOne(id);
     }
 
     @PostMapping
-    public ResponseEntity<CreateDrugResponseDto> create(@RequestBody CreateDrugDto medications){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CreateDrugResponseDto> create(@RequestBody CreateDrugDto medications) {
         var newDrug = drugService.create(medications);
         return new ResponseEntity<>(newDrug, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> delete(@PathVariable int id) {
         drugService.delete(id);
         return ResponseEntity.noContent().build();
     }

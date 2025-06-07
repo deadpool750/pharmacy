@@ -14,7 +14,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/employees")
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasRole('ADMIN')")
+
 public class EmployeeController {
 
     private final EmployeeService employeeService;

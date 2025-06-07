@@ -14,7 +14,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/suppliers")
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasRole('ADMIN')")
+
 public class SupplierController {
 
     private final SupplierService supplierService;

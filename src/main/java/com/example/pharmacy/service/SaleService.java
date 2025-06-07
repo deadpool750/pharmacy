@@ -4,7 +4,10 @@ import com.example.pharmacy.controller.dto.sale.CreateSaleDto;
 import com.example.pharmacy.controller.dto.sale.CreateSaleResponseDto;
 import com.example.pharmacy.controller.dto.sale.GetSaleDto;
 import com.example.pharmacy.infrastructure.entity.SalesEntity;
+import com.example.pharmacy.infrastructure.entity.UserEntity;
+import com.example.pharmacy.repository.CustomerRepository;
 import com.example.pharmacy.repository.SaleRepository;
+import com.example.pharmacy.repository.IUserRepository;
 import com.example.pharmacy.service.inputs.SaleModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,10 +21,21 @@ import java.util.stream.Collectors;
 public class SaleService {
 
     private final SaleRepository saleRepository;
+    private final JwtService jwtService;
+    private final IUserRepository userRepository;
+    private final CustomerRepository customerRepository;
 
     @Autowired
-    public SaleService(SaleRepository saleRepository) {
+    public SaleService(
+            SaleRepository saleRepository,
+            JwtService jwtService,
+            IUserRepository userRepository,
+            CustomerRepository customerRepository
+    ) {
         this.saleRepository = saleRepository;
+        this.jwtService = jwtService;
+        this.userRepository = userRepository;
+        this.customerRepository = customerRepository;
     }
 
     public List<GetSaleDto> getAll() {
@@ -85,5 +99,25 @@ public class SaleService {
             throw new RuntimeException("Sale not found");
         }
         saleRepository.deleteById(id);
+    }
+
+    public List<GetSaleDto> getSalesForCurrentCustomer(String token) {
+        String username = jwtService.getUsername(token);
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        int customerId = customerRepository.findByEmail(user.getUsername())
+                .orElseThrow(() -> new RuntimeException("Customer not found")).getId();
+
+        return saleRepository.findByCustomerId(customerId).stream()
+                .map(sale -> new GetSaleDto(
+                        sale.getId(),
+                        sale.getCustomerId(),
+                        sale.getMedicationId(),
+                        sale.getQuantity(),
+                        sale.getTotalPrice(),
+                        sale.getSaleDate()
+                ))
+                .collect(Collectors.toList());
     }
 }
