@@ -1,9 +1,8 @@
 // src/pages/UserHomePage.tsx
 import React, { useEffect, useState } from 'react';
 import {
-    Typography, Card, CardContent, CardActions, Button,
-    Box, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogActions,
-    TextField
+    Typography, Card, CardContent, Button, Box, AppBar, Toolbar,
+    Dialog, DialogTitle, DialogContent, DialogActions, TextField, List, ListItem, Divider
 } from '@mui/material';
 import axios from '../api/axios';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +23,7 @@ const UserHomePage: React.FC = () => {
     const [expiryDate, setExpiryDate] = useState('');
     const [cvc, setCvc] = useState('');
     const [amount, setAmount] = useState('');
+    const [cart, setCart] = useState<Medication[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -43,14 +43,30 @@ const UserHomePage: React.FC = () => {
             .catch(err => console.error('Failed to fetch balance:', err));
     };
 
-    const handleBuy = (id: number) => {
-        axios.post(`/users/buy/${id}`)
+    const addToCart = (med: Medication) => {
+        if (!cart.some(item => item.id === med.id)) {
+            setCart(prev => [...prev, med]);
+        }
+    };
+
+    const removeFromCart = (id: number) => {
+        setCart(prev => prev.filter(item => item.id !== id));
+    };
+
+    const handleBuyAll = () => {
+        if (cart.length === 0) return;
+        Promise.all(cart.map(item =>
+            axios.post(`/users/buy/${item.id}`)
+        ))
             .then(() => {
                 alert('Purchase successful!');
+                setCart([]);
                 fetchBalance();
-                fetchDrugs(); // Update stock after purchase
+                fetchDrugs();
             })
-            .catch(error => alert(`Error: ${error.response?.data?.message || 'Failed to buy medication'}`));
+            .catch(err => {
+                alert(`Purchase failed: ${err.response?.data?.message || 'Unknown error'}`);
+            });
     };
 
     const handleDeposit = () => {
@@ -77,6 +93,8 @@ const UserHomePage: React.FC = () => {
         navigate('/login');
     };
 
+    const cartTotal = cart.reduce((sum, item) => sum + item.price, 0);
+
     return (
         <>
             <AppBar position="static">
@@ -96,45 +114,70 @@ const UserHomePage: React.FC = () => {
                 </Toolbar>
             </AppBar>
 
-            <Box padding="2rem">
-                <Typography variant="h4" gutterBottom>
-                    Available Medications
-                </Typography>
+            <Box padding="2rem" display="flex" gap="3rem" alignItems="flex-start">
+                <Box flex={2}>
+                    <Typography variant="h4" gutterBottom>
+                        Available Medications
+                    </Typography>
+                    <List>
+                        {medications.map((med) => (
+                            <ListItem key={med.id} disableGutters>
+                                <Card sx={{ width: '100%', padding: '1rem' }}>
+                                    <CardContent>
+                                        <Typography variant="h6">{med.name}</Typography>
+                                        <Typography variant="body2" color="textSecondary">
+                                            Manufacturer: {med.manufacturer}
+                                        </Typography>
+                                        <Typography variant="body2" color="textSecondary">
+                                            In Stock: {med.stockQuantity}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            Price: ${med.price.toFixed(2)}
+                                        </Typography>
+                                        <Box mt={1}>
+                                            <Button
+                                                variant="contained"
+                                                disabled={med.stockQuantity === 0 || cart.some(item => item.id === med.id)}
+                                                onClick={() => addToCart(med)}
+                                            >
+                                                {cart.some(item => item.id === med.id) ? 'In Cart' : 'Add to Cart'}
+                                            </Button>
+                                        </Box>
+                                    </CardContent>
+                                </Card>
+                            </ListItem>
+                        ))}
+                    </List>
+                </Box>
 
-                <Box display="flex" flexWrap="wrap" gap="1.5rem">
-                    {medications.map((med) => (
-                        <Box
-                            key={med.id}
-                            flex="1 1 calc(33.333% - 1rem)"
-                            minWidth="250px"
-                            maxWidth="100%"
-                        >
-                            <Card>
-                                <CardContent>
-                                    <Typography variant="h6">{med.name}</Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        Manufacturer: {med.manufacturer}
-                                    </Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        In Stock: {med.stockQuantity}
-                                    </Typography>
-                                    <Typography variant="body2">
-                                        Price: ${med.price.toFixed(2)}
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={() => handleBuy(med.id)}
-                                        disabled={med.stockQuantity <= 0}
-                                    >
-                                        {med.stockQuantity > 0 ? 'Buy' : 'Out of Stock'}
-                                    </Button>
-                                </CardActions>
-                            </Card>
-                        </Box>
-                    ))}
+                <Box flex={1}>
+                    <Typography variant="h5" gutterBottom>
+                        Cart ({cart.length})
+                    </Typography>
+                    <List>
+                        {cart.map((item) => (
+                            <ListItem key={item.id} divider>
+                                <Box display="flex" justifyContent="space-between" width="100%">
+                                    <span>{item.name}</span>
+                                    <span>${item.price.toFixed(2)}</span>
+                                    <Button size="small" onClick={() => removeFromCart(item.id)}>Remove</Button>
+                                </Box>
+                            </ListItem>
+                        ))}
+                    </List>
+                    <Divider sx={{ my: 2 }} />
+                    <Typography variant="body1" fontWeight="bold">
+                        Total: ${cartTotal.toFixed(2)}
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        color="success"
+                        sx={{ mt: 2 }}
+                        disabled={cart.length === 0}
+                        onClick={handleBuyAll}
+                    >
+                        Buy All
+                    </Button>
                 </Box>
             </Box>
 

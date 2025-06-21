@@ -54,13 +54,21 @@ public class UserService {
         MedicationsEntity drug = drugRepository.findById(medicationId)
                 .orElseThrow(() -> new RuntimeException("Medication not found"));
 
+        if (drug.getStockQuantity() <= 0) {
+            throw new RuntimeException("Medication is out of stock");
+        }
+
         if (drug.getPrice().compareTo(user.getBalance()) > 0) {
             throw new RuntimeException("Insufficient funds");
         }
 
         user.setBalance(user.getBalance().subtract(drug.getPrice()));
         userRepository.save(user);
+
+        drug.setStockQuantity(drug.getStockQuantity() - 1);
+        drugRepository.save(drug);
     }
+
 
     private UserEntity getUserByPrincipal(Principal principal) {
         return userRepository.findByUsername(principal.getName())
