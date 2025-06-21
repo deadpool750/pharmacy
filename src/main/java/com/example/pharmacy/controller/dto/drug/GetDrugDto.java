@@ -21,13 +21,25 @@ public class GetDrugDto {
 
     private boolean isAvailable;
 
-    public GetDrugDto(int id, String name, String manufacturer, BigDecimal price, Date expirationDate, boolean isAvailable) {
+    private int stockQuantity;
+
+
+    public GetDrugDto(int id, String name, String manufacturer, BigDecimal price, Date expirationDate, boolean isAvailable,  int stockQuantity) {
         this.id = id;
         this.name = name;
         this.manufacturer = manufacturer;
         this.price = price;
         this.expirationDate = expirationDate;
         this.isAvailable = isAvailable;
+        this.stockQuantity = stockQuantity;
+    }
+
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
     public GetDrugDto() {

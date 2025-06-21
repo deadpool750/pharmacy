@@ -11,8 +11,9 @@ import { useNavigate } from 'react-router-dom';
 interface Medication {
     id: number;
     name: string;
-    description: string;
+    manufacturer: string;
     price: number;
+    stockQuantity: number;
 }
 
 const UserHomePage: React.FC = () => {
@@ -47,6 +48,7 @@ const UserHomePage: React.FC = () => {
             .then(() => {
                 alert('Purchase successful!');
                 fetchBalance();
+                fetchDrugs(); // Update stock after purchase
             })
             .catch(error => alert(`Error: ${error.response?.data?.message || 'Failed to buy medication'}`));
     };
@@ -110,12 +112,24 @@ const UserHomePage: React.FC = () => {
                             <Card>
                                 <CardContent>
                                     <Typography variant="h6">{med.name}</Typography>
-                                    <Typography color="textSecondary">{med.description}</Typography>
-                                    <Typography variant="body2">Price: ${med.price.toFixed(2)}</Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Manufacturer: {med.manufacturer}
+                                    </Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        In Stock: {med.stockQuantity}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        Price: ${med.price.toFixed(2)}
+                                    </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <Button variant="contained" color="primary" onClick={() => handleBuy(med.id)}>
-                                        Buy
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => handleBuy(med.id)}
+                                        disabled={med.stockQuantity <= 0}
+                                    >
+                                        {med.stockQuantity > 0 ? 'Buy' : 'Out of Stock'}
                                     </Button>
                                 </CardActions>
                             </Card>
