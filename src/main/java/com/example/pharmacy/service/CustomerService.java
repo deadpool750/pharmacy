@@ -32,7 +32,7 @@ public class CustomerService {
 
     public GetCustomerDto getOne(int id) {
         logger.info("Fetching customer with ID: {}", id);
-        var customer = customerRepository.findById((long) id)
+        var customer = customerRepository.findById((int) id)
                 .orElseThrow(() -> {
                     logger.warn("Customer not found with ID: {}", id);
                     return new RuntimeException("Customer not found");
@@ -56,12 +56,12 @@ public class CustomerService {
 
     public void delete(int id) {
         logger.info("Attempting to delete customer with ID: {}", id);
-        if (!customerRepository.existsById((long) id)) {
+        if (!customerRepository.existsById((int) id)) {
             logger.warn("Customer not found for deletion with ID: {}", id);
             throw new RuntimeException("Customer not found");
         }
 
-        customerRepository.deleteById((long) id);
+        customerRepository.deleteById((int) id);
         logger.info("Customer with ID {} deleted successfully", id);
     }
 }

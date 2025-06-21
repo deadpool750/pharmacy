@@ -14,12 +14,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/drugs")
-public class DrugstoreController {
+public class DrugController {
 
     private final DrugService drugService;
 
     @Autowired
-    public DrugstoreController(DrugService drugService) {
+    public DrugController(DrugService drugService) {
         this.drugService = drugService;
     }
 
@@ -48,4 +48,10 @@ public class DrugstoreController {
         drugService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CreateDrugResponseDto> updateDrug(@PathVariable int id, @RequestBody CreateDrugDto dto) {
+        return ResponseEntity.ok(drugService.updateDrug(id, dto));
+    }
+
 }

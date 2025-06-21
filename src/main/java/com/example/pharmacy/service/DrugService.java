@@ -52,7 +52,6 @@ public class DrugService {
     }
 
     public CreateDrugResponseDto create(CreateDrugDto medication) {
-        // Convert BigDecimal from DTO to float (safely), then to Price value object
         BigDecimal priceValue = BigDecimal.valueOf(medication.getPrice().floatValue());
         var price = Price.create(priceValue);
 
@@ -90,4 +89,27 @@ public class DrugService {
         }
         drugRepository.deleteById(id);
     }
+
+    public CreateDrugResponseDto updateDrug(int id, CreateDrugDto dto) {
+        MedicationsEntity drug = drugRepository.findById((long) id)
+                .orElseThrow(() -> new RuntimeException("Drug not found"));
+
+        drug.setName(dto.getName());
+        drug.setManufacturer(dto.getManufacturer());
+        drug.setPrice(dto.getPrice());
+        drug.setExpirationDate(dto.getExpirationDate());
+        drug.setStockQuantity(dto.getStockQuantity());
+
+        drugRepository.save(drug);
+
+        return new CreateDrugResponseDto(
+                drug.getId(),
+                drug.getName(),
+                drug.getManufacturer(),
+                drug.getPrice(),
+                drug.getExpirationDate(),
+                drug.getStockQuantity()
+        );
+    }
+
 }
