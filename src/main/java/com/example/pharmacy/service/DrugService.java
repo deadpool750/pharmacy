@@ -32,7 +32,8 @@ public class DrugService {
                         medication.getManufacturer(),
                         medication.getPrice(),
                         medication.getExpirationDate(),
-                        medication.getStockQuantity() > 0
+                        medication.getStockQuantity() > 0,
+                        medication.getStockQuantity()
                 ))
                 .collect(Collectors.toList());
     }
@@ -45,7 +46,8 @@ public class DrugService {
                 medication.getManufacturer(),
                 medication.getPrice(),
                 medication.getExpirationDate(),
-                medication.getStockQuantity() > 0
+                medication.getStockQuantity() > 0,
+                medication.getStockQuantity()
         );
     }
 
@@ -63,7 +65,6 @@ public class DrugService {
                 medication.getStockQuantity()
         );
 
-        // Convert model to entity
         var drugEntity = new MedicationsEntity();
         drugEntity.setName(drugModel.getName());
         drugEntity.setManufacturer(drugModel.getManufacturer());

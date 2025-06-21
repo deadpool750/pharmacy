@@ -1,31 +1,41 @@
 package com.example.pharmacy.controller.dto.user;
 
+import java.math.BigDecimal;
+
 public class UserResponseDto {
-    private long id;
+    private Long id;
     private String username;
+    private String role;
+    private BigDecimal balance;
 
-
-    public UserResponseDto(long id, String username) {
+    public UserResponseDto(Long id, String username, String role, BigDecimal balance) {
         this.id = id;
         this.username = username;
+        this.role = role;
+        this.balance = balance;
     }
 
-    public UserResponseDto() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public Long getId() { return id; }
+
+    public String getUsername() { return username; }
+
+    public String getRole() { return role; }
+
+    public BigDecimal getBalance() { return balance; }
 }

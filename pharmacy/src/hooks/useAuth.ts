@@ -1,4 +1,3 @@
-// src/hooks/useAuth.ts
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,6 +8,7 @@ interface LoginRequestDto {
 
 interface LoginResponseDto {
     token: string;
+    role: string; // "ADMIN" or "CUSTOMER"
 }
 
 export const useAuth = () => {
@@ -41,7 +41,15 @@ export const useAuth = () => {
 
             localStorage.setItem("token", data.token);
             setError(null);
-            navigate("/home");
+
+            // 🔁 Navigate based on role (case-insensitive)
+            const role = data.role.toLowerCase();
+            if (role === "admin") {
+                navigate("/admin/home");
+            } else {
+                navigate("/user/home");
+            }
+
         } catch (err: any) {
             console.error("Login failed:", err);
             setError("Login failed: " + err.message);
