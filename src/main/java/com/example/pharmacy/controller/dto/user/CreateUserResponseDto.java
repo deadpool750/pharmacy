@@ -1,17 +1,30 @@
 package com.example.pharmacy.controller.dto.user;
 
 public class CreateUserResponseDto {
-    public CreateUserResponseDto(long id) {
-        this.id = id;
+    private Long id;
+    private String username;
+
+    public CreateUserResponseDto() {
     }
 
-    private long id;
+    public CreateUserResponseDto(Long id, String username) {
+        this.id = id;
+        this.username = username;
+    }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

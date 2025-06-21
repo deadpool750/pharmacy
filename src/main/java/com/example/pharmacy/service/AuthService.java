@@ -34,6 +34,6 @@ public class AuthService {
         }
 
         System.out.println("Login successful for user: " + user.getUsername());
-        return new LoginResponseDto(jwtService.createToken(user));
+        return new LoginResponseDto(jwtService.createToken(user), user.getRole());
     }
 }

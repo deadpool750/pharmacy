@@ -15,12 +15,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/drugs")
 @PreAuthorize("isAuthenticated()")
-public class DrugstoreController {
+public class DrugController {
 
     private final DrugService drugService;
 
     @Autowired
-    public DrugstoreController(DrugService drugService) {
+    public DrugController(DrugService drugService) {
         this.drugService = drugService;
     }
 
