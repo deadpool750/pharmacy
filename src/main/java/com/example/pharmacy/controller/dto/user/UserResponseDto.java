@@ -15,6 +15,14 @@ public class UserResponseDto {
         this.balance = balance;
     }
 
+    public Long getId() { return id; }
+
+    public String getUsername() { return username; }
+
+    public String getRole() { return role; }
+
+    public BigDecimal getBalance() { return balance; }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -30,12 +38,4 @@ public class UserResponseDto {
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
-
-    public Long getId() { return id; }
-
-    public String getUsername() { return username; }
-
-    public String getRole() { return role; }
-
-    public BigDecimal getBalance() { return balance; }
 }

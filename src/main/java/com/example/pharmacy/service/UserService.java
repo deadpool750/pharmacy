@@ -10,9 +10,12 @@ import com.example.pharmacy.repository.IUserRepository;
 import com.example.pharmacy.repository.DrugRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.example.pharmacy.controller.dto.user.UserResponseDto;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -100,4 +103,16 @@ public class UserService {
                 expiryDate != null && expiryDate.matches("(0[1-9]|1[0-2])/\\d{2}") &&
                 cvc != null && cvc.matches("\\d{3}");
     }
+
+    public List<UserResponseDto> getUsersByRole(String role) {
+        return userRepository.findByRole(role).stream()
+                .map(user -> new UserResponseDto(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getRole(),
+                        user.getBalance()
+                ))
+                .collect(Collectors.toList());
+    }
+
 }

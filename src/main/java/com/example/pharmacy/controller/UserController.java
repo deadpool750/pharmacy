@@ -6,10 +6,12 @@ import com.example.pharmacy.controller.dto.user.CreateUserResponseDto;
 import com.example.pharmacy.controller.dto.user.UserResponseDto;
 import com.example.pharmacy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -45,6 +47,12 @@ public class UserController {
     @PostMapping("/buy/{medicationId}")
     public void buyDrug(@PathVariable Long medicationId, Principal principal) {
         userService.buyMedication(principal, medicationId);
+    }
+
+    @GetMapping("/customers")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<UserResponseDto> getAllCustomers() {
+        return userService.getUsersByRole("CUSTOMER");
     }
 
 }
