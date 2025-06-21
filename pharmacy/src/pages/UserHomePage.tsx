@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import {
     Typography, Card, CardContent, Button, Box, AppBar, Toolbar,
-    Dialog, DialogTitle, DialogContent, DialogActions, TextField, List, ListItem, Divider
+    Dialog, DialogTitle, DialogContent, DialogActions, TextField,
+    List, ListItem, Divider, Snackbar, Alert
 } from '@mui/material';
 import axios from '../api/axios';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +25,11 @@ const UserHomePage: React.FC = () => {
     const [cvc, setCvc] = useState('');
     const [amount, setAmount] = useState('');
     const [cart, setCart] = useState<Medication[]>([]);
+
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -31,16 +37,22 @@ const UserHomePage: React.FC = () => {
         fetchBalance();
     }, []);
 
+    const showSnackbar = (message: string, severity: 'success' | 'error' = 'success') => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setSnackbarOpen(true);
+    };
+
     const fetchDrugs = () => {
         axios.get('/drugs')
             .then(response => setMedications(response.data))
-            .catch(error => console.error('Failed to fetch drugs:', error));
+            .catch(() => showSnackbar('Failed to fetch drugs', 'error'));
     };
 
     const fetchBalance = () => {
         axios.get('/users/me')
             .then(res => setBalance(res.data.balance))
-            .catch(err => console.error('Failed to fetch balance:', err));
+            .catch(() => showSnackbar('Failed to fetch balance', 'error'));
     };
 
     const addToCart = (med: Medication) => {
@@ -55,17 +67,15 @@ const UserHomePage: React.FC = () => {
 
     const handleBuyAll = () => {
         if (cart.length === 0) return;
-        Promise.all(cart.map(item =>
-            axios.post(`/users/buy/${item.id}`)
-        ))
+        Promise.all(cart.map(item => axios.post(`/users/buy/${item.id}`)))
             .then(() => {
-                alert('Purchase successful!');
+                showSnackbar('Purchase successful!', 'success');
                 setCart([]);
                 fetchBalance();
                 fetchDrugs();
             })
             .catch(err => {
-                alert(`Purchase failed: ${err.response?.data?.message || 'Unknown error'}`);
+                showSnackbar(`Purchase failed: ${err.response?.data?.message || 'Unknown error'}`, 'error');
             });
     };
 
@@ -76,7 +86,7 @@ const UserHomePage: React.FC = () => {
             cvc,
             amount: parseFloat(amount),
         }).then(() => {
-            alert('Deposit successful!');
+            showSnackbar('Deposit successful!', 'success');
             setOpen(false);
             fetchBalance();
             setCardNumber('');
@@ -84,7 +94,7 @@ const UserHomePage: React.FC = () => {
             setCvc('');
             setAmount('');
         }).catch(err => {
-            alert(`Deposit failed: ${err.response?.data?.message || 'Unknown error'}`);
+            showSnackbar(`Deposit failed: ${err.response?.data?.message || 'Unknown error'}`, 'error');
         });
     };
 
@@ -100,7 +110,7 @@ const UserHomePage: React.FC = () => {
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                        User Dashboard
+                        Walter.White.inc
                     </Typography>
                     <Typography variant="body1" sx={{ marginRight: 2 }}>
                         Balance: ${balance.toFixed(2)}
@@ -219,6 +229,22 @@ const UserHomePage: React.FC = () => {
                     <Button variant="contained" onClick={handleDeposit}>Confirm</Button>
                 </DialogActions>
             </Dialog>
+
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={4000}
+                onClose={() => setSnackbarOpen(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert
+                    onClose={() => setSnackbarOpen(false)}
+                    severity={snackbarSeverity}
+                    sx={{ width: '100%' }}
+                    variant="filled"
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </>
     );
 };
