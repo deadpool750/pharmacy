@@ -6,6 +6,7 @@ import com.example.pharmacy.controller.dto.sale.GetSaleDto;
 import com.example.pharmacy.infrastructure.entity.SalesEntity;
 import com.example.pharmacy.infrastructure.entity.UserEntity;
 import com.example.pharmacy.repository.CustomerRepository;
+import com.example.pharmacy.repository.DrugRepository;
 import com.example.pharmacy.repository.SaleRepository;
 import com.example.pharmacy.repository.IUserRepository;
 import com.example.pharmacy.service.inputs.SaleModel;
@@ -24,39 +25,62 @@ public class SaleService {
     private final JwtService jwtService;
     private final IUserRepository userRepository;
     private final CustomerRepository customerRepository;
+    private final DrugRepository drugRepository;
 
     @Autowired
     public SaleService(
             SaleRepository saleRepository,
             JwtService jwtService,
             IUserRepository userRepository,
-            CustomerRepository customerRepository
+            CustomerRepository customerRepository,
+            DrugRepository drugRepository
     ) {
         this.saleRepository = saleRepository;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.customerRepository = customerRepository;
+        this.drugRepository = drugRepository;
     }
 
     public List<GetSaleDto> getAll() {
         return saleRepository.findAll().stream()
-                .map(sale -> new GetSaleDto(
-                        sale.getId(),
-                        sale.getCustomerId(),
-                        sale.getMedicationId(),
-                        sale.getQuantity(),
-                        sale.getTotalPrice(),
-                        sale.getSaleDate()
-                ))
+                .map(sale -> {
+                    String customerName = userRepository.findById(Long.valueOf(sale.getCustomerId()))
+                            .map(UserEntity::getUsername)
+                            .orElse("Unknown Customer");
+
+                    String medicationName = drugRepository.findById(Long.valueOf(sale.getMedicationId()))
+                            .map(drug -> drug.getName())
+                            .orElse("Unknown Medication");
+
+                    return new GetSaleDto(
+                            sale.getId(),
+                            customerName,
+                            medicationName,
+                            sale.getQuantity(),
+                            sale.getTotalPrice(),
+                            sale.getSaleDate()
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
     public GetSaleDto getOne(long id) {
-        var sale = saleRepository.findById(id).orElseThrow(() -> new RuntimeException("Sale not found"));
+        var sale = saleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Sale not found"));
+
+        String customerName = userRepository.findById(Long.valueOf(sale.getCustomerId()))
+                .map(UserEntity::getUsername)
+                .orElse("Unknown Customer");
+
+        String medicationName = drugRepository.findById(Long.valueOf(sale.getMedicationId()))
+                .map(drug -> drug.getName())
+                .orElse("Unknown Medication");
+
         return new GetSaleDto(
                 sale.getId(),
-                sale.getCustomerId(),
-                sale.getMedicationId(),
+                customerName,
+                medicationName,
                 sale.getQuantity(),
                 sale.getTotalPrice(),
                 sale.getSaleDate()
@@ -110,14 +134,20 @@ public class SaleService {
                 .orElseThrow(() -> new RuntimeException("Customer not found")).getId();
 
         return saleRepository.findByCustomerId(customerId).stream()
-                .map(sale -> new GetSaleDto(
-                        sale.getId(),
-                        sale.getCustomerId(),
-                        sale.getMedicationId(),
-                        sale.getQuantity(),
-                        sale.getTotalPrice(),
-                        sale.getSaleDate()
-                ))
+                .map(sale -> {
+                    String medicationName = drugRepository.findById(Long.valueOf(sale.getMedicationId()))
+                            .map(drug -> drug.getName())
+                            .orElse("Unknown Medication");
+
+                    return new GetSaleDto(
+                            sale.getId(),
+                            user.getUsername(),
+                            medicationName,
+                            sale.getQuantity(),
+                            sale.getTotalPrice(),
+                            sale.getSaleDate()
+                    );
+                })
                 .collect(Collectors.toList());
     }
 }

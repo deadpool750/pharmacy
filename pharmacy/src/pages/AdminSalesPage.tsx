@@ -7,8 +7,8 @@ import axios from '../api/axios';
 
 interface Sale {
     id: number;
-    customerId: number;
-    medicationId: number;
+    customerName: string;
+    medicationName: string;
     quantity: number;
     totalPrice: number;
     saleDate: string;
@@ -43,8 +43,8 @@ const AdminSalesPage: React.FC = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
-                            <TableCell>Customer ID</TableCell>
-                            <TableCell>Medication ID</TableCell>
+                            <TableCell>Customer Name</TableCell>
+                            <TableCell>Medication Name</TableCell>
                             <TableCell>Quantity</TableCell>
                             <TableCell>Total Price</TableCell>
                             <TableCell>Sale Date</TableCell>
@@ -54,11 +54,11 @@ const AdminSalesPage: React.FC = () => {
                         {sales.map((sale) => (
                             <TableRow key={sale.id}>
                                 <TableCell>{sale.id}</TableCell>
-                                <TableCell>{sale.customerId}</TableCell>
-                                <TableCell>{sale.medicationId}</TableCell>
+                                <TableCell>{sale.customerName}</TableCell>
+                                <TableCell>{sale.medicationName}</TableCell>
                                 <TableCell>{sale.quantity}</TableCell>
                                 <TableCell>${sale.totalPrice.toFixed(2)}</TableCell>
-                                <TableCell>{sale.saleDate}</TableCell>
+                                <TableCell>{new Date(sale.saleDate).toLocaleString()}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

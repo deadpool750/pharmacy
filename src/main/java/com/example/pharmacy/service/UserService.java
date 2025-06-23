@@ -1,5 +1,6 @@
 package com.example.pharmacy.service;
 
+import com.example.pharmacy.controller.dto.sale.CreateSaleDto;
 import com.example.pharmacy.controller.dto.user.CreateDepositRequestDto;
 import com.example.pharmacy.controller.dto.user.CreateUserRequestDto;
 import com.example.pharmacy.controller.dto.user.CreateUserResponseDto;
@@ -23,11 +24,18 @@ public class UserService {
     private final IUserRepository userRepository;
     private final DrugRepository drugRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SaleService saleService; // ← add this
 
-    public UserService(IUserRepository userRepository, DrugRepository drugRepository, PasswordEncoder passwordEncoder) {
+    public UserService(
+            IUserRepository userRepository,
+            DrugRepository drugRepository,
+            PasswordEncoder passwordEncoder,
+            SaleService saleService // ← add this
+    ) {
         this.userRepository = userRepository;
         this.drugRepository = drugRepository;
         this.passwordEncoder = passwordEncoder;
+        this.saleService = saleService; // ← assign it
     }
 
     public UserResponseDto getUser(Long id) {
@@ -70,6 +78,14 @@ public class UserService {
 
         drug.setStockQuantity(drug.getStockQuantity() - 1);
         drugRepository.save(drug);
+
+        CreateSaleDto saleDto = new CreateSaleDto();
+        saleDto.setCustomerId(user.getId().intValue());
+        saleDto.setMedicationId(drug.getId());
+        saleDto.setQuantity(1);
+        saleDto.setTotalPrice(drug.getPrice());
+
+        saleService.create(saleDto);
     }
 
 

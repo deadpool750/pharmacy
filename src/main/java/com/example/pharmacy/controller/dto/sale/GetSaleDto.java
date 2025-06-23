@@ -4,20 +4,19 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class GetSaleDto {
-
     private int id;
-    private int customerId;
-    private int medicationId;
+    private String customerName;
+    private String medicationName;
     private int quantity;
     private BigDecimal totalPrice;
     private Timestamp saleDate;
 
     public GetSaleDto() {}
 
-    public GetSaleDto(int id, int customerId, int medicationId, int quantity, BigDecimal totalPrice, Timestamp saleDate) {
+    public GetSaleDto(int id, String customerName, String medicationName, int quantity, BigDecimal totalPrice, Timestamp saleDate) {
         this.id = id;
-        this.customerId = customerId;
-        this.medicationId = medicationId;
+        this.customerName = customerName;
+        this.medicationName = medicationName;
         this.quantity = quantity;
         this.totalPrice = totalPrice;
         this.saleDate = saleDate;
@@ -27,12 +26,12 @@ public class GetSaleDto {
         return id;
     }
 
-    public int getCustomerId() {
-        return customerId;
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public int getMedicationId() {
-        return medicationId;
+    public String getMedicationName() {
+        return medicationName;
     }
 
     public int getQuantity() {
