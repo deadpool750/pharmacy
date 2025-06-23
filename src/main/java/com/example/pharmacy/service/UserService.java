@@ -54,39 +54,41 @@ public class UserService {
         return new CreateUserResponseDto(user.getId(), user.getUsername());
     }
 
-    public void depositMoney(Principal principal, BigDecimal amount) {
-        var user = getUserByPrincipal(principal);
-        user.setBalance(user.getBalance().add(amount));
-        userRepository.save(user);
-    }
 
-    public void buyMedication(Principal principal, Long medicationId) {
+    public void buyMedication(Principal principal, Long medicationId, int quantity) {
         var user = getUserByPrincipal(principal);
         MedicationsEntity drug = drugRepository.findById(medicationId)
                 .orElseThrow(() -> new RuntimeException("Medication not found"));
 
-        if (drug.getStockQuantity() <= 0) {
-            throw new RuntimeException("Medication is out of stock");
+        if (quantity <= 0) {
+            throw new RuntimeException("Quantity must be at least 1");
         }
 
-        if (drug.getPrice().compareTo(user.getBalance()) > 0) {
+        if (drug.getStockQuantity() < quantity) {
+            throw new RuntimeException("Not enough stock available");
+        }
+
+        BigDecimal totalPrice = drug.getPrice().multiply(BigDecimal.valueOf(quantity));
+
+        if (totalPrice.compareTo(user.getBalance()) > 0) {
             throw new RuntimeException("Insufficient funds");
         }
 
-        user.setBalance(user.getBalance().subtract(drug.getPrice()));
+        user.setBalance(user.getBalance().subtract(totalPrice));
         userRepository.save(user);
 
-        drug.setStockQuantity(drug.getStockQuantity() - 1);
+        drug.setStockQuantity(drug.getStockQuantity() - quantity);
         drugRepository.save(drug);
 
         CreateSaleDto saleDto = new CreateSaleDto();
         saleDto.setCustomerId(user.getId().intValue());
         saleDto.setMedicationId(drug.getId());
-        saleDto.setQuantity(1);
-        saleDto.setTotalPrice(drug.getPrice());
+        saleDto.setQuantity(quantity);
+        saleDto.setTotalPrice(totalPrice);
 
         saleService.create(saleDto);
     }
+
 
 
     private UserEntity getUserByPrincipal(Principal principal) {

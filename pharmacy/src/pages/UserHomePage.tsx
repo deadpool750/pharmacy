@@ -16,6 +16,10 @@ interface Medication {
     stockQuantity: number;
 }
 
+interface CartItem extends Medication {
+    quantity: number;
+}
+
 const UserHomePage: React.FC = () => {
     const [medications, setMedications] = useState<Medication[]>([]);
     const [balance, setBalance] = useState<number>(0);
@@ -24,7 +28,7 @@ const UserHomePage: React.FC = () => {
     const [expiryDate, setExpiryDate] = useState('');
     const [cvc, setCvc] = useState('');
     const [amount, setAmount] = useState('');
-    const [cart, setCart] = useState<Medication[]>([]);
+    const [cart, setCart] = useState<CartItem[]>([]);
 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -57,7 +61,7 @@ const UserHomePage: React.FC = () => {
 
     const addToCart = (med: Medication) => {
         if (!cart.some(item => item.id === med.id)) {
-            setCart(prev => [...prev, med]);
+            setCart(prev => [...prev, { ...med, quantity: 1 }]);
         }
     };
 
@@ -65,9 +69,22 @@ const UserHomePage: React.FC = () => {
         setCart(prev => prev.filter(item => item.id !== id));
     };
 
+    const updateQuantity = (id: number, quantity: number, max: number) => {
+        const safeQuantity = Math.max(1, Math.min(quantity, max));
+        setCart(prev =>
+            prev.map(item =>
+                item.id === id ? { ...item, quantity: safeQuantity } : item
+            )
+        );
+    };
+
     const handleBuyAll = () => {
         if (cart.length === 0) return;
-        Promise.all(cart.map(item => axios.post(`/users/buy/${item.id}`)))
+        Promise.all(
+            cart.map(item =>
+                axios.post(`/users/buy/${item.id}`, { quantity: item.quantity })
+            )
+        )
             .then(() => {
                 showSnackbar('Purchase successful!', 'success');
                 setCart([]);
@@ -103,7 +120,7 @@ const UserHomePage: React.FC = () => {
         navigate('/login');
     };
 
-    const cartTotal = cart.reduce((sum, item) => sum + item.price, 0);
+    const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     return (
         <>
@@ -147,10 +164,15 @@ const UserHomePage: React.FC = () => {
                                         <Box mt={1}>
                                             <Button
                                                 variant="contained"
-                                                disabled={med.stockQuantity === 0 || cart.some(item => item.id === med.id)}
+                                                disabled={
+                                                    med.stockQuantity === 0 ||
+                                                    cart.some(item => item.id === med.id)
+                                                }
                                                 onClick={() => addToCart(med)}
                                             >
-                                                {cart.some(item => item.id === med.id) ? 'In Cart' : 'Add to Cart'}
+                                                {cart.some(item => item.id === med.id)
+                                                    ? 'In Cart'
+                                                    : 'Add to Cart'}
                                             </Button>
                                         </Box>
                                     </CardContent>
@@ -167,9 +189,27 @@ const UserHomePage: React.FC = () => {
                     <List>
                         {cart.map((item) => (
                             <ListItem key={item.id} divider>
-                                <Box display="flex" justifyContent="space-between" width="100%">
+                                <Box display="flex" justifyContent="space-between" alignItems="center" width="100%" gap={2}>
                                     <span>{item.name}</span>
-                                    <span>${item.price.toFixed(2)}</span>
+                                    <TextField
+                                        type="number"
+                                        size="small"
+                                        label="Qty"
+                                        value={item.quantity}
+                                        inputProps={{
+                                            min: 1,
+                                            max: item.stockQuantity,
+                                        }}
+                                        onChange={(e) =>
+                                            updateQuantity(
+                                                item.id,
+                                                parseInt(e.target.value),
+                                                item.stockQuantity
+                                            )
+                                        }
+                                        sx={{ width: 80 }}
+                                    />
+                                    <span>${(item.price * item.quantity).toFixed(2)}</span>
                                     <Button size="small" onClick={() => removeFromCart(item.id)}>Remove</Button>
                                 </Box>
                             </ListItem>

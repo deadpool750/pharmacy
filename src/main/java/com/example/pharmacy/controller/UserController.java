@@ -1,5 +1,6 @@
 package com.example.pharmacy.controller;
 
+import com.example.pharmacy.controller.dto.BuyMedicationRequestDto;
 import com.example.pharmacy.controller.dto.user.CreateDepositRequestDto;
 import com.example.pharmacy.controller.dto.user.CreateUserRequestDto;
 import com.example.pharmacy.controller.dto.user.CreateUserResponseDto;
@@ -45,9 +46,11 @@ public class UserController {
     }
 
     @PostMapping("/buy/{medicationId}")
-    public void buyDrug(@PathVariable Long medicationId, Principal principal) {
-        userService.buyMedication(principal, medicationId);
+    public void buyDrug(@PathVariable Long medicationId, @RequestBody BuyMedicationRequestDto dto, Principal principal) {
+        userService.buyMedication(principal, medicationId, dto.getQuantity());
     }
+
+
 
     @GetMapping("/customers")
     @PreAuthorize("hasRole('ADMIN')")
