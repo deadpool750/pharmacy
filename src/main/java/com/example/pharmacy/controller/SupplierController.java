@@ -15,7 +15,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/suppliers")
 @PreAuthorize("hasRole('ADMIN')")
-
 public class SupplierController {
 
     private final SupplierService supplierService;
@@ -39,6 +38,12 @@ public class SupplierController {
     public ResponseEntity<CreateSupplierResponseDto> createSupplier(@RequestBody CreateSupplierDto dto) {
         var supplier = supplierService.create(dto);
         return new ResponseEntity<>(supplier, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<GetSupplierDto> updateSupplier(@PathVariable long id, @RequestBody CreateSupplierDto dto) {
+        var updatedSupplier = supplierService.update(id, dto);
+        return new ResponseEntity<>(updatedSupplier, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

@@ -70,4 +70,26 @@ public class EmployeeService {
         }
         employeeRepository.deleteById(id);
     }
+
+    public GetEmployeeDto update(long id, CreateEmployeeDto dto) {
+        var employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        employee.setName(dto.getName());
+        employee.setPosition(dto.getPosition());
+        employee.setSalary(dto.getSalary());
+        employee.setHireDate(dto.getHireDate());
+
+        var saved = employeeRepository.save(employee);
+
+        return new GetEmployeeDto(
+                saved.getId(),
+                saved.getName(),
+                saved.getPosition(),
+                saved.getSalary(),
+                saved.getHireDate()
+        );
+    }
+
+
 }

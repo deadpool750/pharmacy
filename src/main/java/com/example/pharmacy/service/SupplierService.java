@@ -47,6 +47,20 @@ public class SupplierService {
         return new CreateSupplierResponseDto(saved.getId(), saved.getName(), saved.getPhone(), saved.getEmail(), saved.getAddress());
     }
 
+    public GetSupplierDto update(long id, CreateSupplierDto dto) {
+        var supplier = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+
+        supplier.setName(dto.getName());
+        supplier.setPhone(dto.getPhone());
+        supplier.setEmail(dto.getEmail());
+        supplier.setAddress(dto.getAddress());
+
+        var updated = repository.save(supplier);
+
+        return new GetSupplierDto(updated.getId(), updated.getName(), updated.getPhone(), updated.getEmail(), updated.getAddress());
+    }
+
     public void delete(long id) {
         if (!repository.existsById(id)) {
             throw new RuntimeException("Supplier not found");
