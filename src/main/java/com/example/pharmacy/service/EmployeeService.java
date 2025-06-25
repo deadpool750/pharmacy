@@ -12,16 +12,29 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service layer responsible for business logic related to employees.
+ */
 @Service
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
+    /**
+     * Constructs an EmployeeService with the given repository.
+     *
+     * @param employeeRepository the repository used to interact with the employee database
+     */
     @Autowired
     public EmployeeService(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
 
+    /**
+     * Retrieves all employees from the database.
+     *
+     * @return a list of employee DTOs
+     */
     public List<GetEmployeeDto> getAll() {
         return employeeRepository.findAll().stream()
                 .map(emp -> new GetEmployeeDto(
@@ -33,11 +46,32 @@ public class EmployeeService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a single employee by ID.
+     *
+     * @param id the ID of the employee
+     * @return the corresponding employee DTO
+     * @throws RuntimeException if the employee is not found
+     */
     public GetEmployeeDto getOne(long id) {
-        var emp = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Employee not found"));
-        return new GetEmployeeDto(emp.getId(), emp.getName(), emp.getPosition(), emp.getSalary(), emp.getHireDate());
+        var emp = employeeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        return new GetEmployeeDto(
+                emp.getId(),
+                emp.getName(),
+                emp.getPosition(),
+                emp.getSalary(),
+                emp.getHireDate()
+        );
     }
 
+    /**
+     * Creates a new employee in the system.
+     *
+     * @param dto the data for the new employee
+     * @return the response DTO of the created employee
+     */
     public CreateEmployeeResponseDto create(CreateEmployeeDto dto) {
         var model = new EmployeeModel(
                 null,
@@ -64,6 +98,12 @@ public class EmployeeService {
         );
     }
 
+    /**
+     * Deletes an employee by ID.
+     *
+     * @param id the ID of the employee to delete
+     * @throws RuntimeException if the employee does not exist
+     */
     public void delete(long id) {
         if (!employeeRepository.existsById(id)) {
             throw new RuntimeException("Employee not found");
@@ -71,6 +111,14 @@ public class EmployeeService {
         employeeRepository.deleteById(id);
     }
 
+    /**
+     * Updates an existing employee's data.
+     *
+     * @param id  the ID of the employee to update
+     * @param dto the new data to apply
+     * @return the updated employee DTO
+     * @throws RuntimeException if the employee is not found
+     */
     public GetEmployeeDto update(long id, CreateEmployeeDto dto) {
         var employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
@@ -90,6 +138,4 @@ public class EmployeeService {
                 saved.getHireDate()
         );
     }
-
-
 }

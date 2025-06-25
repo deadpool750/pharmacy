@@ -5,6 +5,36 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * AdminHomePage Component
+ *
+ * This is the main landing page for admin users after logging in.
+ * It provides navigation to various administrative sections via cards.
+ *
+ * Features:
+ * - Displays quick access cards for: Customers, Employees, Suppliers, Sales, Drugs
+ * - Each card includes a title, description, and a navigation button
+ * - Includes a logout button in the top AppBar that clears the token and redirects to the login screen
+ *
+ * Routes:
+ * - /admin/customers
+ * - /admin/employees
+ * - /admin/suppliers
+ * - /admin/sales
+ * - /admin/drugs
+ *
+ * Technologies Used:
+ * - React
+ * - React Router (navigation)
+ * - Material UI (AppBar, Cards, Buttons, Typography)
+ *
+ * Usage:
+ * ```tsx
+ * <AdminHomePage />
+ * ```
+ */
+
+
 const AdminHomePage: React.FC = () => {
     const navigate = useNavigate();
 

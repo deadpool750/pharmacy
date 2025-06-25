@@ -1,3 +1,9 @@
+/**
+ * Axios instance configured for API calls.
+ * Automatically includes JWT token (if available) in the Authorization header.
+ * Base URL is set to the backend API running on localhost.
+ */
+
 import axios from "axios";
 
 const instance = axios.create({

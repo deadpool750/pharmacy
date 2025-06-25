@@ -14,6 +14,32 @@ interface Employee {
     hireDate: string;
 }
 
+/**
+ * AdminEmployeesPage Component
+ *
+ * This page allows administrators to view and manage employee records.
+ * Features include:
+ * - Viewing a table of all employees
+ * - Adding new employees via a dialog form
+ * - Editing existing employee data
+ * - Displaying success/error notifications using Material-UI Snackbars
+ *
+ * API Endpoints:
+ * - GET `/employees` — fetch all employees
+ * - POST `/employees` — create new employee
+ * - PUT `/employees/{id}` — update existing employee
+ *
+ * Technologies Used:
+ * - React (with hooks)
+ * - Material UI (Table, Dialog, Snackbar, TextField, etc.)
+ * - Axios (custom instance with JWT handling)
+ *
+ * Usage:
+ * ```tsx
+ * <AdminEmployeesPage />
+ * ```
+ */
+
 const AdminEmployeesPage: React.FC = () => {
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [snackbarOpen, setSnackbarOpen] = useState(false);

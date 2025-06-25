@@ -6,7 +6,26 @@ import {
     Button,
     Box
 } from '@mui/material';
-import { Link } from 'react-router-dom'; // ⬅️ Add this
+import { Link } from 'react-router-dom';
+
+/**
+ * Register Component
+ *
+ * This page provides a registration form for new users to create an account.
+ *
+ * Features:
+ * - Input fields for username, email, and password
+ * - Submit button to register the user (currently not connected to backend logic)
+ * - Navigation link to the login page for existing users
+ *
+ * Behavior:
+ * - Currently only renders the UI; does not yet handle form submission logic or validation
+ *
+ * Dependencies:
+ * - React, MUI components for layout and styling
+ * - React Router's `Link` for navigation to the login page
+ */
+
 
 const Register: React.FC = () => {
     return (

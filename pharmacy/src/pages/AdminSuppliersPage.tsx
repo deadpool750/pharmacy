@@ -15,6 +15,33 @@ interface Supplier {
     address: string;
 }
 
+/**
+ * AdminSuppliersPage Component
+ *
+ * This admin interface allows viewing and managing suppliers.
+ * Admins can:
+ * - Fetch and display all supplier entries from the backend (`/suppliers`)
+ * - Add a new supplier using a dialog form
+ * - Edit existing supplier details
+ * - Get feedback via snackbar notifications
+ *
+ * State:
+ * - `suppliers`: list of all suppliers fetched from the server
+ * - `form`: holds the input data for create/update actions
+ * - `editSupplier`: tracks the supplier being edited (null means create mode)
+ *
+ * Dependencies:
+ * - React (useState, useEffect)
+ * - Axios for HTTP communication
+ * - MUI for UI components like Table, Dialog, Snackbar, etc.
+ *
+ * Usage:
+ * ```tsx
+ * <AdminSuppliersPage />
+ * ```
+ */
+
+
 const AdminSuppliersPage: React.FC = () => {
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [snackbarOpen, setSnackbarOpen] = useState(false);

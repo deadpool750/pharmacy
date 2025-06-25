@@ -1,3 +1,22 @@
+/**
+ * Custom React hook for handling user authentication.
+ *
+ * - Sends login request to the backend
+ * - Stores JWT token in localStorage on success
+ * - Redirects user to the appropriate homepage based on role ("ADMIN" or "CUSTOMER")
+ * - Sets error state on failure
+ *
+ * @returns { login, error }
+ * - `login`: function to authenticate with username and password
+ * - `error`: current error message (if any)
+ *
+ * Usage:
+ * ```tsx
+ * const { login, error } = useAuth();
+ * login({ username: "john", password: "secret" });
+ * ```
+ */
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -42,7 +61,6 @@ export const useAuth = () => {
             localStorage.setItem("token", data.token);
             setError(null);
 
-            // 🔁 Navigate based on role (case-insensitive)
             const role = data.role.toLowerCase();
             if (role === "admin") {
                 navigate("/admin/home");

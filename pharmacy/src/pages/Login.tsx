@@ -9,6 +9,28 @@ import {
 import { Link } from "react-router-dom"; // ⬅️ Add this
 import { useAuth } from "../hooks/useAuth";
 
+/**
+ * Login Component
+ *
+ * This page allows users (both admins and customers) to log in using their credentials.
+ *
+ * Features:
+ * - Takes `username` and `password` as input fields
+ * - Uses the `useAuth` hook to send a login request
+ * - Displays an error message if login fails
+ * - Provides a link to the registration page for new users
+ *
+ * Behavior:
+ * - On successful login, redirects to the appropriate dashboard based on user role
+ * - On failure, shows a centered error message
+ *
+ * Dependencies:
+ * - React, MUI components for layout and styling
+ * - `useAuth` hook for authentication logic
+ * - React Router's `Link` for navigation to the register page
+ */
+
+
 const Login: React.FC = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");

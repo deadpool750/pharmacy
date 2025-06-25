@@ -14,15 +14,29 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing drug-related operations, such as
+ * retrieving, creating, updating, and deleting medications.
+ */
 @Service
 public class DrugService {
     private final DrugRepository drugRepository;
 
+    /**
+     * Constructor to inject DrugRepository.
+     *
+     * @param drugRepository repository for accessing drug data
+     */
     @Autowired
     public DrugService(DrugRepository drugRepository) {
         this.drugRepository = drugRepository;
     }
 
+    /**
+     * Retrieves all medications from the database.
+     *
+     * @return a list of GetDrugDto representing all drugs
+     */
     public List<GetDrugDto> getAll(){
         var medications = drugRepository.findAll();
         return medications.stream()
@@ -38,8 +52,16 @@ public class DrugService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a single medication by ID.
+     *
+     * @param id the ID of the medication
+     * @return the medication as a GetDrugDto
+     * @throws RuntimeException if the medication is not found
+     */
     public GetDrugDto getOne(int id){
-        var medication = drugRepository.findById((long) id).orElseThrow( () -> new RuntimeException("Medication not found"));
+        var medication = drugRepository.findById((long) id)
+                .orElseThrow(() -> new RuntimeException("Medication not found"));
         return new GetDrugDto(
                 medication.getId(),
                 medication.getName(),
@@ -51,6 +73,12 @@ public class DrugService {
         );
     }
 
+    /**
+     * Creates a new drug based on input DTO.
+     *
+     * @param medication DTO containing drug creation data
+     * @return a DTO representing the created drug
+     */
     public CreateDrugResponseDto create(CreateDrugDto medication) {
         BigDecimal priceValue = BigDecimal.valueOf(medication.getPrice().floatValue());
         var price = Price.create(priceValue);
@@ -67,7 +95,7 @@ public class DrugService {
         var drugEntity = new MedicationsEntity();
         drugEntity.setName(drugModel.getName());
         drugEntity.setManufacturer(drugModel.getManufacturer());
-        drugEntity.setPrice(drugModel.getPrice()); // Extract Float value
+        drugEntity.setPrice(drugModel.getPrice());
         drugEntity.setStockQuantity(drugModel.getStockQuantity());
         drugEntity.setExpirationDate(drugModel.getExpirationDate());
 
@@ -83,6 +111,12 @@ public class DrugService {
         );
     }
 
+    /**
+     * Deletes a drug by its ID.
+     *
+     * @param id ID of the drug to delete
+     * @throws RuntimeException if the drug does not exist
+     */
     public void delete(long id){
         if (!drugRepository.existsById(id)){
             throw new RuntimeException();
@@ -90,6 +124,14 @@ public class DrugService {
         drugRepository.deleteById(id);
     }
 
+    /**
+     * Updates an existing drug with new data.
+     *
+     * @param id the ID of the drug to update
+     * @param dto the new drug data
+     * @return a DTO representing the updated drug
+     * @throws RuntimeException if the drug is not found
+     */
     public CreateDrugResponseDto updateDrug(int id, CreateDrugDto dto) {
         MedicationsEntity drug = drugRepository.findById((long) id)
                 .orElseThrow(() -> new RuntimeException("Drug not found"));

@@ -18,6 +18,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service for managing medication sales and retrieving related data.
+ */
 @Service
 public class SaleService {
 
@@ -27,6 +30,15 @@ public class SaleService {
     private final CustomerRepository customerRepository;
     private final DrugRepository drugRepository;
 
+    /**
+     * Constructs the SaleService with necessary dependencies.
+     *
+     * @param saleRepository       Repository for sale records
+     * @param jwtService           JWT token service for user identification
+     * @param userRepository       User repository for user info
+     * @param customerRepository   Customer repository
+     * @param drugRepository       Drug repository
+     */
     @Autowired
     public SaleService(
             SaleRepository saleRepository,
@@ -42,6 +54,11 @@ public class SaleService {
         this.drugRepository = drugRepository;
     }
 
+    /**
+     * Retrieves all sales records with resolved customer and medication names.
+     *
+     * @return list of sale DTOs
+     */
     public List<GetSaleDto> getAll() {
         return saleRepository.findAll().stream()
                 .map(sale -> {
@@ -65,6 +82,13 @@ public class SaleService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a single sale record by ID.
+     *
+     * @param id ID of the sale
+     * @return DTO of the sale
+     * @throws RuntimeException if sale not found
+     */
     public GetSaleDto getOne(long id) {
         var sale = saleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sale not found"));
@@ -87,6 +111,12 @@ public class SaleService {
         );
     }
 
+    /**
+     * Creates and saves a new sale record.
+     *
+     * @param saleDto DTO with sale input data
+     * @return response DTO with persisted sale data
+     */
     public CreateSaleResponseDto create(CreateSaleDto saleDto) {
         var now = Timestamp.from(Instant.now());
 
@@ -118,6 +148,12 @@ public class SaleService {
         );
     }
 
+    /**
+     * Deletes a sale record by ID.
+     *
+     * @param id ID of the sale
+     * @throws RuntimeException if sale does not exist
+     */
     public void delete(long id) {
         if (!saleRepository.existsById(id)) {
             throw new RuntimeException("Sale not found");
@@ -125,6 +161,12 @@ public class SaleService {
         saleRepository.deleteById(id);
     }
 
+    /**
+     * Retrieves all sales made by the currently authenticated customer.
+     *
+     * @param token JWT token of the logged-in customer
+     * @return list of sale DTOs
+     */
     public List<GetSaleDto> getSalesForCurrentCustomer(String token) {
         String username = jwtService.getUsername(token);
         UserEntity user = userRepository.findByUsername(username)

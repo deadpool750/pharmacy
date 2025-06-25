@@ -13,6 +13,27 @@ interface Sale {
     totalPrice: number;
     saleDate: string;
 }
+/**
+ * AdminSalesPage Component
+ *
+ * Displays a list of all sales transactions in a table format for admin users.
+ *
+ * Features:
+ * - Fetches sales data from the backend (`/sales` endpoint)
+ * - Shows customer name, medication name, quantity, total price, and sale date
+ * - Displays error notification (Snackbar) if fetching fails
+ *
+ * Technologies Used:
+ * - React (useState, useEffect)
+ * - Axios for API requests
+ * - Material-UI for UI components (Table, Snackbar, etc.)
+ *
+ * Usage:
+ * ```tsx
+ * <AdminSalesPage />
+ * ```
+ */
+
 
 const AdminSalesPage: React.FC = () => {
     const [sales, setSales] = useState<Sale[]>([]);

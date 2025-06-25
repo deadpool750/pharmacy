@@ -17,8 +17,28 @@ interface Customer {
     id: number;
     username: string;
     role: string;
-    balance?: number; // Optional to avoid undefined errors
+    balance?: number;
 }
+
+/**
+ * AdminCustomersPage Component
+ *
+ * Displays a table of customer accounts for the admin panel.
+ *
+ * - Fetches customer data from the `/users/customers` API endpoint
+ * - Shows a loading spinner while data is loading
+ * - Displays each customer's ID, username, role, and account balance
+ *
+ * Usage:
+ * ```tsx
+ * <AdminCustomersPage />
+ * ```
+ *
+ * Dependencies:
+ * - Material UI components (Box, Typography, Table, CircularProgress, etc.)
+ * - Axios instance with JWT-based authentication
+ */
+
 
 const AdminCustomersPage: React.FC = () => {
     const [customers, setCustomers] = useState<Customer[]>([]);

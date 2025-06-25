@@ -12,16 +12,30 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service for handling customer-related business logic,
+ * including creation, retrieval, and deletion of customers.
+ */
 @Service
 public class CustomerService {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
     private final CustomerRepository customerRepository;
 
+    /**
+     * Constructs the CustomerService with the required repository.
+     *
+     * @param customerRepository JPA repository for customer entities
+     */
     public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
 
+    /**
+     * Retrieves all customers from the database.
+     *
+     * @return a list of GetCustomerDto objects representing all customers
+     */
     public List<GetCustomerDto> getAll() {
         logger.info("Fetching all customers from database");
         var customers = customerRepository.findAll();
@@ -30,6 +44,13 @@ public class CustomerService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a single customer by their ID.
+     *
+     * @param id the ID of the customer
+     * @return a DTO representing the customer
+     * @throws RuntimeException if the customer is not found
+     */
     public GetCustomerDto getOne(int id) {
         logger.info("Fetching customer with ID: {}", id);
         var customer = customerRepository.findById((int) id)
@@ -41,6 +62,12 @@ public class CustomerService {
         return new GetCustomerDto(customer.getId(), customer.getName(), customer.getPhone(), customer.getEmail());
     }
 
+    /**
+     * Creates a new customer in the database.
+     *
+     * @param dto DTO containing new customer information
+     * @return a DTO representing the saved customer
+     */
     public CreateCustomerResponseDto create(CreateCustomerDto dto) {
         logger.info("Creating new customer: {}", dto);
         var entity = new CustomersEntity();
@@ -54,6 +81,12 @@ public class CustomerService {
         return new CreateCustomerResponseDto(saved.getId(), saved.getName(), saved.getPhone(), saved.getEmail());
     }
 
+    /**
+     * Deletes a customer by ID if they exist.
+     *
+     * @param id the ID of the customer to delete
+     * @throws RuntimeException if the customer does not exist
+     */
     public void delete(int id) {
         logger.info("Attempting to delete customer with ID: {}", id);
         if (!customerRepository.existsById((int) id)) {

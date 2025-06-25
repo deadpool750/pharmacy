@@ -15,6 +15,34 @@ interface Drug {
     stockQuantity: number;
 }
 
+/**
+ * AdminDrugsPage Component
+ *
+ * This component provides a management interface for administrators to view, create, edit, and delete drugs.
+ *
+ * Features:
+ * - Displays a table of all drugs (name, manufacturer, price, expiration date, stock quantity)
+ * - Allows creation of new drugs through a modal form
+ * - Allows editing and deletion of existing drugs
+ * - Provides snackbar notifications for user feedback (success/error)
+ *
+ * API Endpoints:
+ * - GET `/drugs` — fetch all drugs
+ * - POST `/drugs` — create new drug
+ * - PUT `/drugs/{id}` — update drug
+ * - DELETE `/drugs/{id}` — delete drug
+ *
+ * Technologies:
+ * - React
+ * - Material UI (Table, Dialog, Snackbar, Alert, etc.)
+ * - Axios (preconfigured instance with JWT)
+ *
+ * Usage:
+ * ```tsx
+ * <AdminDrugsPage />
+ * ```
+ */
+
 const AdminDrugsPage: React.FC = () => {
     const [drugs, setDrugs] = useState<Drug[]>([]);
     const [openDialog, setOpenDialog] = useState(false);

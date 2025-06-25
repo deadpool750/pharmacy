@@ -1,46 +1,113 @@
 package com.example.pharmacy.infrastructure.entity;
 
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 
+/**
+ * Entity representing a user in the pharmacy system.
+ */
 @Entity
 @Table(name = "users")
 public class UserEntity {
 
+    /** Unique identifier for the user. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** Username of the user. Must be unique and not null. */
     @Column(nullable = false, unique = true)
     private String username;
 
+    /** Encrypted password of the user. Cannot be null. */
     @Column(nullable = false)
     private String password;
 
+    /** Role of the user (e.g., CUSTOMER or ADMIN). Default is CUSTOMER. */
     @Column(nullable = false)
     private String role = "CUSTOMER"; // default role
 
+    /** Current account balance of the user. Defaults to zero. */
     @Column(nullable = false)
     private BigDecimal balance = BigDecimal.ZERO;
 
-    public Long getId() { return id; }
+    /**
+     * Gets the user ID.
+     * @return the user ID
+     */
+    public Long getId() {
+        return id;
+    }
 
-    public void setId(Long id) { this.id = id; }
+    /**
+     * Sets the user ID.
+     * @param id the user ID
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getUsername() { return username; }
+    /**
+     * Gets the username.
+     * @return the username
+     */
+    public String getUsername() {
+        return username;
+    }
 
-    public void setUsername(String username) { this.username = username; }
+    /**
+     * Sets the username.
+     * @param username the username
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-    public String getPassword() { return password; }
+    /**
+     * Gets the encrypted password.
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
 
-    public void setPassword(String password) { this.password = password; }
+    /**
+     * Sets the encrypted password.
+     * @param password the password
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-    public String getRole() { return role; }
+    /**
+     * Gets the role of the user.
+     * @return the role (e.g., "CUSTOMER" or "ADMIN")
+     */
+    public String getRole() {
+        return role;
+    }
 
-    public void setRole(String role) { this.role = role; }
+    /**
+     * Sets the role of the user.
+     * @param role the role
+     */
+    public void setRole(String role) {
+        this.role = role;
+    }
 
-    public BigDecimal getBalance() { return balance; }
+    /**
+     * Gets the account balance.
+     * @return the balance
+     */
+    public BigDecimal getBalance() {
+        return balance;
+    }
 
-    public void setBalance(BigDecimal balance) { this.balance = balance; }
+    /**
+     * Sets the account balance.
+     * @param balance the balance
+     */
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 }

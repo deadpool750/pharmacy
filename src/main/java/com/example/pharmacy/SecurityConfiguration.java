@@ -18,17 +18,34 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
 
+/**
+ * Configures Spring Security for the Pharmacy application,
+ * including JWT authentication, role-based access control, and CORS.
+ */
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
     private final JwtAuthFilter jwtAuthFilter;
 
+    /**
+     * Constructor injecting the custom JWT authentication filter.
+     *
+     * @param jwtAuthFilter the filter responsible for extracting and validating JWT tokens
+     */
     @Autowired
     public SecurityConfiguration(JwtAuthFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
     }
 
+    /**
+     * Defines the main security filter chain with stateless session management,
+     * role-based URL access restrictions, and JWT token filter registration.
+     *
+     * @param http HttpSecurity object to configure
+     * @return configured SecurityFilterChain
+     * @throws Exception in case of configuration errors
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -47,6 +64,11 @@ public class SecurityConfiguration {
         return http.build();
     }
 
+    /**
+     * Configures CORS to allow requests from the frontend application.
+     *
+     * @return CorsConfigurationSource with specified origins and methods
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
@@ -60,6 +82,11 @@ public class SecurityConfiguration {
         return source;
     }
 
+    /**
+     * Defines a BCrypt password encoder bean.
+     *
+     * @return an instance of BCryptPasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

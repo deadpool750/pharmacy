@@ -20,6 +20,33 @@ interface CartItem extends Medication {
     quantity: number;
 }
 
+/**
+ * UserHomePage Component
+ *
+ * This component serves as the main interface for customers using the pharmacy application.
+ *
+ * Key Features:
+ * - Displays a list of available medications, including name, manufacturer, stock, and price
+ * - Allows users to add medications to a cart with quantity selection
+ * - Calculates total cost and facilitates a "Buy All" purchase flow
+ * - Shows the user's current account balance
+ * - Includes a dialog to simulate deposits using fake card inputs
+ * - Displays feedback messages using snackbars for success/error states
+ * - Includes logout functionality and navigation using React Router
+ *
+ * Behavior:
+ * - Fetches medication list and user balance on mount
+ * - Handles cart state and updates quantities safely
+ * - Prevents purchasing more than the available stock
+ * - Communicates with backend via authenticated Axios instance
+ *
+ * Technologies Used:
+ * - React, MUI (Material UI) for layout and UI components
+ * - Axios for API communication
+ * - React Router for navigation
+ */
+
+
 const UserHomePage: React.FC = () => {
     const [medications, setMedications] = useState<Medication[]>([]);
     const [balance, setBalance] = useState<number>(0);
