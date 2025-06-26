@@ -147,6 +147,10 @@ const UserHomePage: React.FC = () => {
         navigate('/login');
     };
 
+    const handleGoToProfile = () => {
+        navigate('/user/me');
+    };
+
     const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     return (
@@ -156,12 +160,16 @@ const UserHomePage: React.FC = () => {
                     <Typography variant="h6" sx={{ flexGrow: 1 }}>
                         Walter.White.inc
                     </Typography>
+                    <Button color="inherit" onClick={handleGoToProfile}>
+                        Profile
+                    </Button>
                     <Typography variant="body1" sx={{ marginRight: 2 }}>
                         Balance: ${balance.toFixed(2)}
                     </Typography>
                     <Button color="inherit" onClick={() => setOpen(true)}>
                         Deposit
                     </Button>
+
                     <Button color="inherit" onClick={handleLogout}>
                         Logout
                     </Button>

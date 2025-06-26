@@ -19,6 +19,10 @@ public class UserEntity {
     @Column(nullable = false, unique = true)
     private String username;
 
+    /** Email address of the user. Must be unique and not null. */
+    @Column(nullable = false, unique = true)
+    private String email;
+
     /** Encrypted password of the user. Cannot be null. */
     @Column(nullable = false)
     private String password;
@@ -61,6 +65,22 @@ public class UserEntity {
      */
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /**
+     * Gets the email.
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Sets the email.
+     * @param email the email
+     */
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     /**

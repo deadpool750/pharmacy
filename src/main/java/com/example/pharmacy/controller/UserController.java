@@ -1,12 +1,10 @@
 package com.example.pharmacy.controller;
 
 import com.example.pharmacy.controller.dto.BuyMedicationRequestDto;
-import com.example.pharmacy.controller.dto.user.CreateDepositRequestDto;
-import com.example.pharmacy.controller.dto.user.CreateUserRequestDto;
-import com.example.pharmacy.controller.dto.user.CreateUserResponseDto;
-import com.example.pharmacy.controller.dto.user.UserResponseDto;
+import com.example.pharmacy.controller.dto.user.*;
 import com.example.pharmacy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,4 +57,15 @@ public class UserController {
     public List<UserResponseDto> getAllCustomers() {
         return userService.getUsersByRole("CUSTOMER");
     }
+
+    @PutMapping("/me")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<Void> updateUser(@RequestBody UpdateUserRequestDto dto, Principal principal) {
+        userService.updateUser(principal, dto);
+        return ResponseEntity.ok().build();
+    }
+
+
+
+
 }

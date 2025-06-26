@@ -55,6 +55,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/api/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/users/me").hasRole("CUSTOMER")
                         .requestMatchers("/api/drugs/**").hasAnyRole("ADMIN", "CUSTOMER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasRole("CUSTOMER")
@@ -65,6 +66,7 @@ public class SecurityConfiguration {
 
         return http.build();
     }
+
 
     /**
      * Configures CORS to allow requests from the frontend application.

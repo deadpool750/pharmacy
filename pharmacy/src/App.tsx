@@ -10,7 +10,7 @@ import AdminCustomersPage from "./pages/AdminCustomersPage";
 import AdminEmployeesPage from "./pages/AdminEmployeesPage";
 import AdminSuppliersPage from "./pages/AdminSuppliersPage";
 import AdminSalesPage from "./pages/AdminSalesPage";
-
+import MePage from "./pages/MePage";
 
 /**
  * App Component
@@ -22,6 +22,7 @@ import AdminSalesPage from "./pages/AdminSalesPage";
  * - "/login" → Login screen
  * - "/register" → Registration screen
  * - "/user/home" → Customer dashboard (view drugs, cart, deposit, buy)
+ * - "/user/me" → Profile page for editing user data (email, password)
  * - "/admin/home" → Admin dashboard with navigation to management panels
  * - "/admin/drugs" → Manage drugs (CRUD operations)
  * - "/admin/customers" → View registered customer accounts
@@ -42,6 +43,7 @@ export default function App() {
             <Route path="/register" element={<Register />} />
 
             <Route path="/user/home" element={<UserHomePage />} />
+            <Route path="/user/me" element={<MePage />} />
 
             <Route path="/admin/home" element={<AdminHomePage />} />
             <Route path="/admin/drugs" element={<AdminDrugsPage />} />

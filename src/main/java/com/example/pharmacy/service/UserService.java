@@ -1,10 +1,7 @@
 package com.example.pharmacy.service;
 
 import com.example.pharmacy.controller.dto.sale.CreateSaleDto;
-import com.example.pharmacy.controller.dto.user.CreateDepositRequestDto;
-import com.example.pharmacy.controller.dto.user.CreateUserRequestDto;
-import com.example.pharmacy.controller.dto.user.CreateUserResponseDto;
-import com.example.pharmacy.controller.dto.user.UserResponseDto;
+import com.example.pharmacy.controller.dto.user.*;
 import com.example.pharmacy.infrastructure.entity.MedicationsEntity;
 import com.example.pharmacy.infrastructure.entity.UserEntity;
 import com.example.pharmacy.repository.IUserRepository;
@@ -197,5 +194,23 @@ public class UserService {
                         user.getBalance()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public void updateUser(Principal principal, UpdateUserRequestDto dto) {
+        var user = getUserByPrincipal(principal);
+
+        if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
+            user.setEmail(dto.getEmail());
+        }
+
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        if (dto.getUsername() != null && !dto.getUsername().isBlank()) {
+            user.setUsername(dto.getUsername());
+        }
+
+        userRepository.save(user);
     }
 }
