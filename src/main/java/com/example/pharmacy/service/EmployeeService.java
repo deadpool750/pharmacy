@@ -7,6 +7,7 @@ import com.example.pharmacy.infrastructure.entity.EmployeesEntity;
 import com.example.pharmacy.repository.EmployeeRepository;
 import com.example.pharmacy.service.inputs.EmployeeModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class EmployeeService {
      *
      * @return a list of employee DTOs
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public List<GetEmployeeDto> getAll() {
         return employeeRepository.findAll().stream()
                 .map(emp -> new GetEmployeeDto(
@@ -72,6 +74,7 @@ public class EmployeeService {
      * @param dto the data for the new employee
      * @return the response DTO of the created employee
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public CreateEmployeeResponseDto create(CreateEmployeeDto dto) {
         var model = new EmployeeModel(
                 null,
@@ -104,6 +107,7 @@ public class EmployeeService {
      * @param id the ID of the employee to delete
      * @throws RuntimeException if the employee does not exist
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(long id) {
         if (!employeeRepository.existsById(id)) {
             throw new RuntimeException("Employee not found");
@@ -119,6 +123,7 @@ public class EmployeeService {
      * @return the updated employee DTO
      * @throws RuntimeException if the employee is not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public GetEmployeeDto update(long id, CreateEmployeeDto dto) {
         var employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee not found"));

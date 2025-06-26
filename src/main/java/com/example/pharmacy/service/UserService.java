@@ -9,6 +9,8 @@ import com.example.pharmacy.infrastructure.entity.MedicationsEntity;
 import com.example.pharmacy.infrastructure.entity.UserEntity;
 import com.example.pharmacy.repository.IUserRepository;
 import com.example.pharmacy.repository.DrugRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,7 @@ public class UserService {
      * @param passwordEncoder  encoder for secure password storage
      * @param saleService      service to record sales
      */
+    @Autowired
     public UserService(
             IUserRepository userRepository,
             DrugRepository drugRepository,
@@ -55,6 +58,7 @@ public class UserService {
      * @param id user ID
      * @return user response DTO
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public UserResponseDto getUser(Long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -84,6 +88,7 @@ public class UserService {
      * @param medicationId  ID of the medication to buy
      * @param quantity      number of units to buy
      */
+    @PreAuthorize("hasRole('CUSTOMER')")
     public void buyMedication(Principal principal, Long medicationId, int quantity) {
         var user = getUserByPrincipal(principal);
         MedicationsEntity drug = drugRepository.findById(medicationId)
@@ -146,6 +151,7 @@ public class UserService {
      * @param principal authenticated user
      * @param dto       deposit request
      */
+    @PreAuthorize("hasRole('CUSTOMER')")
     public void depositMoney(Principal principal, CreateDepositRequestDto dto) {
         UserEntity user = getUserByPrincipal(principal);
 
@@ -181,6 +187,7 @@ public class UserService {
      * @param role user role to filter (e.g., "CUSTOMER", "ADMIN")
      * @return list of matching users
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponseDto> getUsersByRole(String role) {
         return userRepository.findByRole(role).stream()
                 .map(user -> new UserResponseDto(

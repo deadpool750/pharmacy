@@ -7,6 +7,7 @@ import com.example.pharmacy.infrastructure.entity.CustomersEntity;
 import com.example.pharmacy.repository.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,6 +52,7 @@ public class CustomerService {
      * @return a DTO representing the customer
      * @throws RuntimeException if the customer is not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public GetCustomerDto getOne(int id) {
         logger.info("Fetching customer with ID: {}", id);
         var customer = customerRepository.findById((int) id)

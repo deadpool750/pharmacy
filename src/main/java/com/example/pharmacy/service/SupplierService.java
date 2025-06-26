@@ -7,6 +7,7 @@ import com.example.pharmacy.infrastructure.entity.SuppliersEntity;
 import com.example.pharmacy.repository.SupplierRepository;
 import com.example.pharmacy.service.inputs.SupplierModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class SupplierService {
      *
      * @return list of GetSupplierDto
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public List<GetSupplierDto> getAll() {
         return repository.findAll().stream()
                 .map(s -> new GetSupplierDto(s.getId(), s.getName(), s.getPhone(), s.getEmail(), s.getAddress()))
@@ -48,6 +50,7 @@ public class SupplierService {
      * @return the corresponding GetSupplierDto
      * @throws RuntimeException if supplier is not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public GetSupplierDto getOne(long id) {
         var s = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Supplier not found"));
@@ -60,6 +63,7 @@ public class SupplierService {
      * @param dto the CreateSupplierDto containing input data
      * @return CreateSupplierResponseDto containing saved data
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public CreateSupplierResponseDto create(CreateSupplierDto dto) {
         var model = new SupplierModel(null, dto.getName(), dto.getPhone(), dto.getEmail(), dto.getAddress());
 
@@ -88,6 +92,7 @@ public class SupplierService {
      * @return updated GetSupplierDto
      * @throws RuntimeException if supplier is not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public GetSupplierDto update(long id, CreateSupplierDto dto) {
         var supplier = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Supplier not found"));
@@ -114,6 +119,7 @@ public class SupplierService {
      * @param id the ID of the supplier to delete
      * @throws RuntimeException if the supplier is not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(long id) {
         if (!repository.existsById(id)) {
             throw new RuntimeException("Supplier not found");

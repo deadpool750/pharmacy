@@ -8,6 +8,7 @@ import com.example.pharmacy.repository.DrugRepository;
 import com.example.pharmacy.service.inputs.DrugModel;
 import com.example.pharmacy.service.valueObjects.Price;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -59,6 +60,7 @@ public class DrugService {
      * @return the medication as a GetDrugDto
      * @throws RuntimeException if the medication is not found
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     public GetDrugDto getOne(int id){
         var medication = drugRepository.findById((long) id)
                 .orElseThrow(() -> new RuntimeException("Medication not found"));
@@ -117,6 +119,7 @@ public class DrugService {
      * @param id ID of the drug to delete
      * @throws RuntimeException if the drug does not exist
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(long id){
         if (!drugRepository.existsById(id)){
             throw new RuntimeException();

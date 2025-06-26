@@ -11,6 +11,7 @@ import com.example.pharmacy.repository.SaleRepository;
 import com.example.pharmacy.repository.IUserRepository;
 import com.example.pharmacy.service.inputs.SaleModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -59,6 +60,7 @@ public class SaleService {
      *
      * @return list of sale DTOs
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public List<GetSaleDto> getAll() {
         return saleRepository.findAll().stream()
                 .map(sale -> {
@@ -89,6 +91,7 @@ public class SaleService {
      * @return DTO of the sale
      * @throws RuntimeException if sale not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public GetSaleDto getOne(long id) {
         var sale = saleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sale not found"));
@@ -154,6 +157,7 @@ public class SaleService {
      * @param id ID of the sale
      * @throws RuntimeException if sale does not exist
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(long id) {
         if (!saleRepository.existsById(id)) {
             throw new RuntimeException("Sale not found");
@@ -167,6 +171,7 @@ public class SaleService {
      * @param token JWT token of the logged-in customer
      * @return list of sale DTOs
      */
+    @PreAuthorize("hasRole('CUSTOMER')")
     public List<GetSaleDto> getSalesForCurrentCustomer(String token) {
         String username = jwtService.getUsername(token);
         UserEntity user = userRepository.findByUsername(username)
